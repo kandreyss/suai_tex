@@ -1,1 +1,7 @@
 *.log
+*.aux
+*.bcf
+_minted-main
+*.xml
+*.gz
+*.out
