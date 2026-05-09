@@ -20,13 +20,17 @@
 \renewcommand*{\chapnumfont}{\normalfont\bfseries} % Меняем стиль шрифта для номера главы: нормальный размер, полужирный
 \renewcommand*{\afterchapternum}{\hspace{1em}} % Меняем разделитель между номером главы и названием
 \renewcommand*{\printchaptertitle}{\normalfont\bfseries\centering\MakeUppercase} % Меняем стиль написания для заголовка главы: нормальный размер, полужирный, центрированный, заглавными буквами
-\setbeforesecskip{20pt} % Задаем отступ перед заголовком секции
-\setaftersecskip{20pt} % Ставим такой же отступ после заголовка секции
+\setbeforesecskip{1pt}    % Отступ перед секцией
+\setaftersecskip{1pt}     % Отступ после секции
 \setsecheadstyle{\raggedright\normalfont\bfseries} % Меняем стиль написания для заголовка секции: выравнивание по правому краю без переносов, нормальный размер, полужирный
-\setbeforesubsecskip{20pt} % Задаем отступ перед заголовком подсекции
-\setaftersubsecskip{20pt} % Ставим такой же отступ после заголовка подсекции
+\setbeforesubsecskip{1pt} % Отступ перед подсекцией
+\setaftersubsecskip{1pt}  % Отступ после подсекции
 \setsubsecheadstyle{\raggedright\normalfont\bfseries}  % Меняем стиль написания для заголовка подсекции: выравнивание по правому краю без переносов, нормальный размер, полужирный
 \setlength{\afterchapskip}{6.3mm} % Отступ после chapter
+
+\setlength{\secindent}{\parindent}      % Абзацный отступ перед section
+\setlength{\subsecindent}{\parindent}   % Абзацный отступ перед subsection
+
 %%% Задаем параметры оглавления %%%
 
 \addto\captionsrussian{\renewcommand\contentsname{Содержание}} % Меняем слово "Оглавление" на "Содержание"
@@ -109,7 +113,7 @@
 \makeatother
 \renewcommand{\labelenumii}{\asbuk{enumii})}        % Кириллица для второго уровня нумерации
 \renewcommand{\labelenumiii}{\arabic{enumiii})}     % Арабские цифры для третьего уровня нумерации
-\setlist{noitemsep, leftmargin=*}                   % Убираем интервалы между пунками одного уровня в списке
+\setlist{noitemsep, leftmargin=*, topsep=0pt}                   % Убираем интервалы между пунками одного уровня в списке
 \setlist[1]{labelindent=\parindent}                 % Отступ у пунктов списка равен абзацному отступу
 \setlist[2]{leftmargin=\parindent}                  % Плюс еще один такой же отступ для следующего уровня
 \setlist[3]{leftmargin=\parindent}                  % И еще один для третьего уровня
@@ -168,7 +172,7 @@ doi=false,                                          % Не отображать 
 isbn=false,                                         % Не показывать ISBN, ISSN, ISRN
 ]{biblatex}[2016/09/17]
 \DeclareDelimFormat{bibinitdelim}{}                 % Убираем пробел между инициалами (Иванов И.И. вместо Иванов И. И.)
-\addbibresource{biba.bib}                           % Определяем файл с библиографией
+\addbibresource{../biba.bib}                           % Определяем файл с библиографией
 
 %%% Скрипт, который автоматически подбирает язык (и, следовательно, формат) для каждой библиографической записи %%%
 %%% Если в названии работы есть кириллица - меняем значение поля langid на russian %%%
@@ -190,3 +194,64 @@ isbn=false,                                         % Не показывать 
 
 % Вставить в начало каждого документа
 % \documentclass[a4paper,14pt,oneside,openany]{memoir}
+
+
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, fit}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18} % Укажите вашу версию (1.18 - современная)
+
+% --- Глобальная настройка стиля "gost" ---
+\pgfplotsset{
+    gost/.style={
+        % Оси проходят через нуль
+        axis lines=middle,          
+        % Стрелки на концах осей
+        axis line style={-stealth, thick}, 
+        % Положение подписей осей (у стрелок)
+        every axis x label/.style={at={(current axis.right of origin)},anchor=north west},
+        every axis y label/.style={at={(current axis.above origin)},anchor=north east},
+        % Запятая в качестве десятичного разделителя (Критично для ГОСТ!)
+        /pgf/number format/use comma, 
+        % Разделитель тысяч - узкий пробел
+        /pgf/number format/1000 sep={\,}, 
+        % Настройка шрифта засечек (чтобы совпадал с текстом)
+        tick label style={font=\normalsize},
+        label style={font=\normalsize},
+        % Отключаем научный формат для обычных чисел
+        x tick label style={/pgf/number format/fixed},
+        y tick label style={/pgf/number format/fixed},
+        % Немного продлеваем оси за пределы крайних точек
+        enlargelimits=0.1,
+    }
+}
+
+% Формулы
+\usepackage{amssymb}
+
+\usepackage{lastpage}
+
+\usepackage{svg}
+
+\usepackage{adjustbox}
+
+\usetikzlibrary{arrows.meta,positioning,fit}
+
+\tikzset{
+    depbox/.style={draw, rounded corners, align=center, inner sep=6pt, fill=black!3},
+    depgroup/.style={draw, rounded corners, inner sep=8pt, dashed},
+    deparrow/.style={-Stealth, thick}
+}
+
+% Более аккуратная типографика для пунктов/подпунктов.
+\setlist{
+    topsep=0.35\baselineskip,
+    itemsep=0.15\baselineskip,
+    parsep=0pt,
+    partopsep=0pt
+}
+
+\usepackage{rotating}
+
+\captionsetup[subfigure]{labelformat=simple}
+\renewcommand\thesubfigure{\asbuk{subfigure})}

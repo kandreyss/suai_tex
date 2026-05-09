@@ -1,17 +1,17 @@
 % Данные преподавателя
-\newcommand{\Dep}{99} % Кафедра
-\newcommand{\teacherPos}{д-р техн. наук , профессор}   % Должность
-\newcommand{\teacherName}{Петров П.П.}           % Имя преподавателя
+\newcommand{\Dep}{99}                               % Кафедра
+\newcommand{\teacherPos}{профессор, д-р техн.наук}  % Должность
+\newcommand{\teacherName}{Петров П.П.}              % Имя преподавателя
 
 % Данные лабораторной работы
-\newcommand{\labNum}{1} % Номер
-\newcommand{\labTitle}{Достаточно длинное название вашей лабораторной работы, которое в принципе может неккоректно отобразиться в документе, но отобразится оно нормально} % Название
-\newcommand{\courseName}{Безумно длинное название предмета, таких даже наверное не существует} % Название дисциплины
+\newcommand{\labNum}{66} % Номер
+\newcommand{\labTitle}{Название вашей лабораторной работы} % Название
+\newcommand{\courseName}{Название дисцпилины}              % Название дисциплины
 
 % Данные студента
-\newcommand{\studentGroup}{м1123пс} % Номер группы
-\newcommand{\studentName}{Иванов И.И.} % Имя студента
-\newcommand{\cityYear}{Санкт-Петербург 2026} % Город и год
+\newcommand{\studentGroup}{м1123пс}          % Номер группы
+\newcommand{\studentName}{Иванов И.И.}       % Имя студента
+\newcommand{\cityYear}{2026}                 % Год
 
 \thispagestyle{empty}
 \title{}
@@ -49,10 +49,10 @@
         {\fontsize{14pt}{16.8pt}\selectfont ОТЧЕТ О ЛАБОРАТОРНОЙ РАБОТЕ №\labNum}
         \vspace{30pt}
         
-        <<\labTitle{}>>
+        \MakeUppercase{\labTitle{}}
         \vspace{30pt}
         
-        по курсу: \courseName{}
+        по курсу: \MakeUppercase{\courseName{}}
     \end{center}
     
     \vspace{150pt}
@@ -70,6 +70,8 @@
     \vfill
     
     \begin{center}
-        \cityYear
+        Санкт-Петербург \cityYear
     \end{center}
 }
+
+\newpage
