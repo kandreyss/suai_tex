@@ -255,3 +255,12 @@ isbn=false,                                         % Не показывать 
 
 \captionsetup[subfigure]{labelformat=simple}
 \renewcommand\thesubfigure{\asbuk{subfigure})}
+
+\newcommand{\img}[4]{
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=#2\textwidth]{image/#1}
+    \caption{#3}
+    \label{fig:#4}
+\end{figure}
+}
