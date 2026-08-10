@@ -4,6 +4,8 @@
 \pagestyle{plain} % Убираем стандарные для данного класса верхние колонтитулы с заголовком текущей главы, оставляем только номер страницы снизу по центру
 \parindent=1.25cm % Абзацный отступ 1.25 см, приблизительно равно пяти знакам, как по ГОСТ
 \usepackage{indentfirst} % Добавляем отступ к первому абзацу
+\newlength{\chapheadindent}
+\setlength{\chapheadindent}{\parindent} % Сохраняем значение абзацного отступа отдельно: внутри заголовка главы memoir локально обнуляет \parindent, поэтому для заголовка нужна независимая копия
 %\linespread{1.3} % Межстрочный интервал (наиболее близко к вордовскому полуторному) - тут вместо этого используется команда OnehalfSpacing*
 \OnehalfSpacing* % Полуторный интервал для текста, одинарный для сносок/подписей
 %%% Задаем языковые параметры и шрифт %%%
@@ -14,19 +16,18 @@
 %%% Задаем стиль заголовков и подзаголовков в тексте %%%
 
 \setsecnumdepth{subsection} % Номера разделов считать до третьего уровня включительно, т.е. нумеруются только главы, секции, подсекции
-\renewcommand*{\chapterheadstart}{} % Переопределяем команду, задающую отступ над заголовком, чтобы отступа не было
+\renewcommand*{\chapterheadstart}{\noindent\hspace*{\chapheadindent}} % Убираем отступ над заголовком; номер главы начинается на позиции абзацного отступа, вровень с текстом
 \renewcommand*{\printchaptername}{} % Переопределяем команду, печатающую слово "Глава", чтобы оно не печалось
-%\renewcommand*{\printchapternum}{} % То же самое для номера главы - тут не надо, номер главы оставляем
 \renewcommand*{\chapnumfont}{\normalfont\bfseries} % Меняем стиль шрифта для номера главы: нормальный размер, полужирный
-\renewcommand*{\afterchapternum}{\hspace{1em}} % Меняем разделитель между номером главы и названием
-\renewcommand*{\printchaptertitle}{\normalfont\bfseries\centering\MakeUppercase} % Меняем стиль написания для заголовка главы: нормальный размер, полужирный, центрированный, заглавными буквами
+\renewcommand*{\afterchapternum}{~} % Неразрывный пробел между номером главы и текстом заголовка
+\renewcommand*{\printchaptertitle}{\normalfont\bfseries} % Меняем стиль написания для заголовка главы: нормальный размер, полужирный, центрированный, заглавными буквами
 \setbeforesecskip{1pt}    % Отступ перед секцией
 \setaftersecskip{1pt}     % Отступ после секции
 \setsecheadstyle{\raggedright\normalfont\bfseries} % Меняем стиль написания для заголовка секции: выравнивание по правому краю без переносов, нормальный размер, полужирный
 \setbeforesubsecskip{1pt} % Отступ перед подсекцией
 \setaftersubsecskip{1pt}  % Отступ после подсекции
 \setsubsecheadstyle{\raggedright\normalfont\bfseries}  % Меняем стиль написания для заголовка подсекции: выравнивание по правому краю без переносов, нормальный размер, полужирный
-\setlength{\afterchapskip}{6.3mm} % Отступ после chapter
+\setlength{\afterchapskip}{1pt} % Отступ после chapter
 
 \setlength{\secindent}{\parindent}      % Абзацный отступ перед section
 \setlength{\subsecindent}{\parindent}   % Абзацный отступ перед subsection
@@ -34,8 +35,10 @@
 %%% Задаем параметры оглавления %%%
 
 \addto\captionsrussian{\renewcommand\contentsname{Содержание}} % Меняем слово "Оглавление" на "Содержание"
+\renewcommand*{\tocheadstart}{} % Убираем абзацный отступ перед заголовком содержания, чтобы центрирование было относительно всей ширины текста
+\renewcommand*{\printtoctitle}[1]{\centering\normalfont\bfseries\MakeUppercase{#1}} % Заголовок "СОДЕРЖАНИЕ" по центру полужирным шрифтом заглавными буквами
 \setrmarg{2.55em plus1fil} % Запрещаем переносы слов в оглавлении
-%\setlength{\cftbeforechapterskip}{0pt} % Эта команда убирает интервал между заголовками глав - тут не надо, так красивее смотрится
+\setlength{\cftbeforechapterskip}{0pt} % Убираем дополнительный интервал перед заголовками глав в содержании - строки идут с обычным межстрочным интервалом
 \renewcommand{\aftertoctitle}{\afterchaptertitle \vspace{-\cftbeforechapterskip}} % Делаем отступ между словом "Содержание" и первой строкой таким же, как у заголовков глав
 %\renewcommand*{\chapternumberline}[1]{} % Делаем так, чтобы номер главы не печатался - тут не надо
 \renewcommand*{\cftchapternumwidth}{1.5em} % Ставим подходящий по размеру разделитель между номером главы и самим заголовком
@@ -113,10 +116,7 @@
 \makeatother
 \renewcommand{\labelenumii}{\asbuk{enumii})}        % Кириллица для второго уровня нумерации
 \renewcommand{\labelenumiii}{\arabic{enumiii})}     % Арабские цифры для третьего уровня нумерации
-\setlist{noitemsep, leftmargin=*, topsep=0pt}                   % Убираем интервалы между пунками одного уровня в списке
-\setlist[1]{labelindent=\parindent}                 % Отступ у пунктов списка равен абзацному отступу
-\setlist[2]{leftmargin=\parindent}                  % Плюс еще один такой же отступ для следующего уровня
-\setlist[3]{leftmargin=\parindent}                  % И еще один для третьего уровня
+\setlist{noitemsep, topsep=0pt, partopsep=0pt, wide=\parindent} % Убираем интервалы между пунктами и вертикальные отступы до/после списка; пункты оформляются как абзацы: маркер начинается с абзацного отступа 1.25 см, перенос строки идет от левого поля
 
 %%% Счетчики для нумерации объектов %%%
 
@@ -141,18 +141,26 @@
 
 \usepackage{xcolor}
 
-\usepackage{minted}
+\usepackage[newfloat]{minted} % Опция newfloat: окружение listing создается пакетом newfloat, благодаря чему подпись, написанная перед кодом, печатается над листингом (стандартный float со стилем plain принудительно ставит подпись снизу)
 \setminted{
-    style=bw,
-    fontsize=\small,
-    linenos=true,
-    frame=single,
+    style=bw,               % Черно-белая подсветка: шрифт простой, без цветов
+    fontsize=\normalsize,   % Размер шрифта кода 12 пт
+    baselinestretch=1,      % Одинарный междустрочный интервал внутри листинга
+    frame=single,           % Листинг помещается в рамку для отделения от основного текста
+    vspace=0pt,             % Убираем собственный вертикальный отступ fancyvrb до и после кода - иначе между подписью и рамкой остается промежуток
     breaklines=true,
-    tabsize=4,
+    tabsize=4,              % Структурный отступ в четыре пробела
     python3=true
 }
 
 \setmonofont{Courier New}
+
+%%% Оформление листингов кода по ГОСТ %%%
+
+\captionsetup[listing]{singlelinecheck=false, font=normalsize, justification=justified, name=Листинг, position=above, skip=0pt} % Подпись листинга размещается над кодом, слева, в виде "Листинг N --- Название" (разделитель-тире задан глобально командой captiondelim); шрифт подписи такой же, как у основного текста; position=above обязателен: без него пакет caption считает подпись нижней и вставляет отступ skip не с той стороны; skip=0pt - подпись прижата к рамке кода
+\counterwithout{listing}{chapter} % Сквозная нумерация листингов по документу, как у рисунков и таблиц
+\BeforeBeginEnvironment{listing}{\begingroup\setlength{\intextsep}{0.5\baselineskip}\setlength{\topsep}{0pt}\setlength{\partopsep}{0pt}} % Отступ в полстроки перед подписью и после рамки листинга; topsep/partopsep убирают отступ, который окружение verbatim вставляет между подписью и рамкой
+\AfterEndEnvironment{listing}{\endgroup} % Ограничиваем изменения только листингами, чтобы не влиять на рисунки и таблицы
 
 %%% Реализация библиографии пакетами biblatex и biblatex-gost с использованием движка biber %%%
 
@@ -172,7 +180,13 @@ doi=false,                                          % Не отображать 
 isbn=false,                                         % Не показывать ISBN, ISSN, ISRN
 ]{biblatex}[2016/09/17]
 \DeclareDelimFormat{bibinitdelim}{}                 % Убираем пробел между инициалами (Иванов И.И. вместо Иванов И. И.)
+\DefineBibliographyStrings{russian}{urlseen = {дата обращения:}} % Полная форма "(дата обращения: 30.06.2026)" вместо сокращения "дата обр."
 \addbibresource{../biba.bib}                           % Определяем файл с библиографией
+\defbibheading{gostbib}[\bibname]{%                 % Заголовок списка источников: по центру, полужирным, без абзацного отступа, с включением в содержание
+  {\renewcommand*{\chapterheadstart}{}%
+   \renewcommand*{\printchaptertitle}[1]{\centering\normalfont\bfseries ##1}%
+   \chapter*{#1}}%
+  \addcontentsline{toc}{chapter}{#1}}
 
 %%% Скрипт, который автоматически подбирает язык (и, следовательно, формат) для каждой библиографической записи %%%
 %%% Если в названии работы есть кириллица - меняем значение поля langid на russian %%%
@@ -243,13 +257,13 @@ isbn=false,                                         % Не показывать 
     deparrow/.style={-Stealth, thick}
 }
 
-% Более аккуратная типографика для пунктов/подпунктов.
-\setlist{
-    topsep=0.35\baselineskip,
-    itemsep=0.15\baselineskip,
-    parsep=0pt,
-    partopsep=0pt
-}
+% Более аккуратная типографика для пунктов/подпунктов - отключено: отступы до/после списков и между пунктами убраны, настройки заданы выше единой командой \setlist
+%\setlist{
+%    topsep=0.35\baselineskip,
+%    itemsep=0.15\baselineskip,
+%    parsep=0pt,
+%    partopsep=0pt
+%}
 
 \usepackage{rotating}
 
