@@ -15,22 +15,43 @@
 
 %%% Задаем стиль заголовков и подзаголовков в тексте %%%
 
-\setsecnumdepth{subsection} % Номера разделов считать до третьего уровня включительно, т.е. нумеруются только главы, секции, подсекции
-\renewcommand*{\chapterheadstart}{\noindent\hspace*{\chapheadindent}} % Убираем отступ над заголовком; номер главы начинается на позиции абзацного отступа, вровень с текстом
-\renewcommand*{\printchaptername}{} % Переопределяем команду, печатающую слово "Глава", чтобы оно не печалось
-\renewcommand*{\chapnumfont}{\normalfont\bfseries} % Меняем стиль шрифта для номера главы: нормальный размер, полужирный
-\renewcommand*{\afterchapternum}{~} % Неразрывный пробел между номером главы и текстом заголовка
-\renewcommand*{\printchaptertitle}{\normalfont\bfseries} % Меняем стиль написания для заголовка главы: нормальный размер, полужирный, центрированный, заглавными буквами
-\setbeforesecskip{1pt}    % Отступ перед секцией
-\setaftersecskip{1pt}     % Отступ после секции
-\setsecheadstyle{\raggedright\normalfont\bfseries} % Меняем стиль написания для заголовка секции: выравнивание по правому краю без переносов, нормальный размер, полужирный
-\setbeforesubsecskip{1pt} % Отступ перед подсекцией
-\setaftersubsecskip{1pt}  % Отступ после подсекции
-\setsubsecheadstyle{\raggedright\normalfont\bfseries}  % Меняем стиль написания для заголовка подсекции: выравнивание по правому краю без переносов, нормальный размер, полужирный
-\setlength{\afterchapskip}{1pt} % Отступ после chapter
+% В memoir: chapter — раздел, section — подраздел, subsection — пункт.
+\setsecnumdepth{subsection}
+\renewcommand*{\thechapter}{\arabic{chapter}}
+\renewcommand*{\thesection}{\thechapter.\arabic{section}}
+\renewcommand*{\thesubsection}{\thesection.\arabic{subsection}}
 
-\setlength{\secindent}{\parindent}      % Абзацный отступ перед section
-\setlength{\subsecindent}{\parindent}   % Абзацный отступ перед subsection
+% Только первая строка получает абзацный отступ. Переносы слов запрещены.
+\newcommand*{\gostheadingstyle}{%
+  \normalfont\normalsize\bfseries\raggedright
+  \hyphenpenalty=10000\exhyphenpenalty=10000\relax}
+\renewcommand*{\chapterheadstart}{}
+\renewcommand*{\printchaptername}{}
+\renewcommand*{\chapternamenum}{} % Убираем оставшийся пробел перед номером.
+\renewcommand*{\chapnumfont}{\gostheadingstyle}
+\renewcommand*{\printchapternum}{%
+  \chapnumfont\noindent\hspace*{\chapheadindent}\thechapter}
+\renewcommand*{\afterchapternum}{\nobreakspace}
+\renewcommand*{\printchapternonum}{\noindent\hspace*{\chapheadindent}}
+\renewcommand*{\printchaptertitle}[1]{\gostheadingstyle #1}
+\setlength{\afterchapskip}{1pt}
+
+\setbeforesecskip{1pt}
+\setaftersecskip{1pt}
+\setbeforesubsecskip{1pt}
+\setaftersubsecskip{1pt}
+% Отключаем висячий отступ локально: следующие строки идут от левого поля.
+\setsecheadstyle{\gostheadingstyle\sethangfrom{\noindent ##1}}
+\setsubsecheadstyle{\gostheadingstyle\sethangfrom{\noindent ##1}}
+\setsecindent{\chapheadindent}
+\setsubsecindent{\chapheadindent}
+\setsecnumformat{\csname the#1\endcsname\nobreakspace}
+
+% Для введения, заключения и других ненумеруемых элементов с записью в ТОС.
+\newcommand{\structuralchapter}[1]{\chapter*{#1}\addcontentsline{toc}{chapter}{#1}}
+% Заголовки в исходном тексте: с прописной буквы, без завершающей точки.
+% Перечень сокращений составляется при наличии не менее трёх обозначений;
+% его элементы автор располагает в алфавитном порядке (требование 3.14).
 
 %%% Задаем параметры оглавления %%%
 
@@ -41,13 +62,26 @@
 \setlength{\cftbeforechapterskip}{0pt} % Убираем дополнительный интервал перед заголовками глав в содержании - строки идут с обычным межстрочным интервалом
 \renewcommand{\aftertoctitle}{\afterchaptertitle \vspace{-\cftbeforechapterskip}} % Делаем отступ между словом "Содержание" и первой строкой таким же, как у заголовков глав
 %\renewcommand*{\chapternumberline}[1]{} % Делаем так, чтобы номер главы не печатался - тут не надо
-\renewcommand*{\cftchapternumwidth}{1.5em} % Ставим подходящий по размеру разделитель между номером главы и самим заголовком
-\renewcommand*{\cftchapterfont}{\normalfont\MakeUppercase} % Названия глав обычным шрифтом заглавными буквами
+\setlength{\cftchapternumwidth}{1.5em} % Ставим подходящий по размеру разделитель между номером главы и самим заголовком
+\renewcommand*{\cftchapterfont}{\normalfont} % Сохраняем написание заголовков в содержании
 \renewcommand*{\cftchapterpagefont}{\normalfont} % Номера страниц обычным шрифтом
 \renewcommand*{\cftchapterdotsep}{\cftdotsep} % Делаем точки до номера страницы после названий глав
 \renewcommand*{\cftdotsep}{1} % Задаем расстояние между точками
 \renewcommand*{\cftchapterleader}{\cftdotfill{\cftchapterdotsep}} % Делаем точки стандартной формы (по умолчанию они "жирные")
 \maxtocdepth{subsection} % В оглавление попадают только разделы первыхтрех уровней: главы, секции и подсекции
+
+% За один знак принимаем ширину цифры 0 в основном шрифте.
+\newlength{\toccharwidth}
+\AtBeginDocument{%
+  \settowidth{\toccharwidth}{\normalfont\normalsize 0}%
+  \cftsetindents{chapter}{0pt}{1.5em}%
+  \cftsetindents{section}{2\toccharwidth}{2.3em}%
+  \cftsetindents{subsection}{4\toccharwidth}{3.2em}%
+}
+\renewcommand*{\cftsectiondotsep}{\cftdotsep}
+\renewcommand*{\cftsubsectiondotsep}{\cftdotsep}
+\renewcommand*{\cftsectionleader}{\cftdotfill{\cftsectiondotsep}}
+\renewcommand*{\cftsubsectionleader}{\cftdotfill{\cftsubsectiondotsep}}
 
 %%% Выравнивание и переносы %%%
 
@@ -85,6 +119,14 @@
 
 \usepackage{graphicx, caption, subcaption} % Подгружаем пакеты для работы с графикой и настройки подписей
 \graphicspath{{images/}} % Определяем папку с рисунками
+
+% Одна пустая строка основного текста вокруг блока рисунка с подписью.
+% Стандартные параметры LaTeX общие для рисунков и таблиц.
+\AtBeginDocument{%
+  \setlength{\intextsep}{\baselineskip}% Объекты внутри текста, включая [H]
+  \setlength{\textfloatsep}{\baselineskip}% Между текстом и объектом сверху/снизу страницы
+  \setlength{\floatsep}{\baselineskip}% Между соседними плавающими объектами
+}
 \captionsetup[figure]{font=small, width=\textwidth, name=Рисунок, justification=centering} % Задаем параметры подписей к рисункам: маленький шрифт (в данном случае 12pt), ширина равна ширине текста, полнотекстовая надпись "Рисунок", выравнивание по центру
 \captionsetup[subfigure]{font=small} % Индексы подрисунков а), б) и так далее тоже шрифтом 12pt (по умолчанию делает еще меньше)
 \captionsetup[table]{singlelinecheck=false,font=small,width=\textwidth,justification=justified} % Задаем параметры подписей к таблицам: запрещаем переносы, маленький шрифт (в данном случае 12pt), ширина равна ширине текста, выравнивание по ширине
@@ -136,6 +178,18 @@
 \usepackage[version=4]{mhchem}                      % Красивые химические уравнения
 \usepackage{amsmath}                                % Усовершенствование отображения математических выражений 
 
+%%% Одинарный интервал перед выключными формулами и после них %%%
+\makeatletter
+\everydisplay\expandafter{%
+  \the\everydisplay
+  % Базовый интервал текущего кегля без множителя полуторного интервала.
+  \setlength{\abovedisplayskip}{\f@baselineskip}%
+  \setlength{\belowdisplayskip}{\abovedisplayskip}%
+  \setlength{\abovedisplayshortskip}{\abovedisplayskip}%
+  \setlength{\belowdisplayshortskip}{\abovedisplayskip}%
+}
+\makeatother
+
 \usepackage{float}                                  % Для картинок по центру
 \usepackage{listings}
 
@@ -184,6 +238,7 @@ isbn=false,                                         % Не показывать 
 \addbibresource{../biba.bib}                           % Определяем файл с библиографией
 \defbibheading{gostbib}[\bibname]{%                 % Заголовок списка источников: по центру, полужирным, без абзацного отступа, с включением в содержание
   {\renewcommand*{\chapterheadstart}{}%
+   \renewcommand*{\printchapternonum}{}%
    \renewcommand*{\printchaptertitle}[1]{\centering\normalfont\bfseries ##1}%
    \chapter*{#1}}%
   \addcontentsline{toc}{chapter}{#1}}
@@ -278,3 +333,9 @@ isbn=false,                                         % Не показывать 
     \label{fig:#4}
 \end{figure}
 }
+
+\newcommand{\integral}[2]{\int_{#1}^{#2}}
+\newcommand{\intinfty}{\int_{-\infty}^{+\infty}}
+\newcommand{\dd}[1]{\mathrm{d}#1} 
+
+\usepackage{diagbox}
